@@ -1,6 +1,7 @@
 import React from 'react'
 import { Form, Field, withFormik } from 'formik'
 import * as Yup from 'yup'
+import axios from 'axios';
 
 const AppForm = ({ errors, touched, values }) => {
   return (
@@ -68,9 +69,15 @@ const FormikApp = withFormik({
       .max(28, 'Calm down there...')
       .required(),
   }),
-  handleSubmit(values, { resetForm }) {
-    console.log(values)
-    resetForm()
+  handleSubmit(values, { setStatus, resetForm }) {
+    axios
+      .post("https://reqres.in/api/users/", values)
+      .then(res => {
+        setStatus(res.data);
+        console.log(res);
+        resetForm();
+      })
+      .catch(error => console.log(error.response));
   }
 })
 const PopulatedAppForm = FormikApp(AppForm)
